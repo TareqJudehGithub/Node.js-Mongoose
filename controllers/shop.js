@@ -3,7 +3,7 @@ const Product = require("../models/product");
 
 //users routes:
 exports.getProducts = (req, res, next) => {
-     Product.fetchAll()
+     Product.find()
           .then(products => {
                res.render(
                     "shop/product-list.ejs",
@@ -36,7 +36,7 @@ exports.getProducts = (req, res, next) => {
 };
 //Shop (main page)
  exports.getIndex = (req, res, next) => {
-     Product.fetchAll()
+     Product.find()
      .then(products => {
           res.render(
                "shop/index.ejs",

@@ -39,7 +39,7 @@
  }
  .card__image {
     height: 200px;
-    width: 250px;
+    width: 200px;
     margin: 0 auto;
   }
   /* Any image tag with in that class should respect .image values */

@@ -7,7 +7,7 @@ const Product = require("../models/product");
 exports.getAdminProducts = (req, res, next) => {
      // get all products for the current user:
    
-     Product.fetchAll()
+     Product.find()
      .then(products => {
         res.render(
              "admin/products.ejs",
@@ -35,17 +35,20 @@ exports.getAddProduct = (req, res, next) => {
 //Add Product action
 exports.postAddProduct = (req, res, next) => { 
      const { title, price, imageUrl, description } = req.body;
-     const product = new Product(
-          title, 
-          price, 
-          imageUrl, 
-          description, 
-          null, 
-          req.user._id
-          );
+
+     //creating a new product by Mongoose:
+     const product = new Product({
+//props defined in /models.products.js rodcustSchema: data received from
+//controller action req.body:
+          title: title,
+          price: price,
+          imageUrl: imageUrl,
+          description: description
+     });
      product
      .save()
      .then(result => {
+          console.log(title + " was successfully created and added to products list.")
           res.redirect("/admin/products");
      })
      .catch(err => console.log(err));
