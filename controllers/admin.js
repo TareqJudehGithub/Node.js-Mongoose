@@ -8,8 +8,14 @@ exports.getAdminProducts = (req, res, next) => {
      // get all products for the current user:
    
      Product.find()
+//.select() and .populate() are like Projections in MongoDB.
+     // .select("title price imageUrl -description")
+     // .populate("userId", "name")
      .then(products => {
-        res.render(
+          console.log(products.map(product => {
+               return `Displaying: ${product.title}`;
+          }));
+          res.render(
              "admin/products.ejs",
              {
                 pageTitle: "Admin Products",
@@ -43,7 +49,12 @@ exports.postAddProduct = (req, res, next) => {
           title: title,
           price: price,
           imageUrl: imageUrl,
-          description: description
+          description: description,
+//since we saved the user in our req(req.user), we now have access to the user:
+//But Mongoose gives us access to the entire User object, so no need
+//to include ._id at the end of req.user
+          userId: req.user,
+          name: req.user.name,
      });
      product
      .save()
@@ -78,18 +89,19 @@ exports.postAddProduct = (req, res, next) => {
 //construct a new produt by editing (replacing) the original product:
   exports.postEditProduct = (req, res, next) => {
      const { id, title, price, imageUrl, description } = req.body;
-    //find the right product ID:
 
-         const product = new Product(
-          title, 
-          price, 
-          imageUrl, 
-          description,
-          id,
-         );
-     product.
-     save()   
+    //1. find the right product ID:
+     Product.findByIdAndUpdate(id)
+    
+     .then(product => {
+          product.title = title,
+          product.price = price,
+          product.imageUrl = imageUrl,
+          product.description = description
+          return product.save();   
+     })    
     .then(result => {
+         console.log(title + " was successfully updated!");
          res.redirect("/admin/products");
          })
     .catch(err => console.log(err));
@@ -98,14 +110,10 @@ exports.postAddProduct = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
      const id = req.body.id; 
 
-     // return req.user.addToCart(product)
-     // .then(result => {
-     //      console.log(result);
-     // })
-      
-     Product.deleteById(id)
+     Product.findByIdAndRemove(id)
     .then(result => {
          res.redirect("/admin/products");
+         console.log(`${result.title} was successfully removed from Products List.`);
     })
     .catch(err => console.log(err));
 };

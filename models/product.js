@@ -20,10 +20,19 @@ const productSchema = new Schema({
      description: {
           type: String,
           required: true
+     },
+     userId: {
+          type: Schema.Types.ObjectId,
+          required: true,
+          //products and users relations setup:
+          //refering to the "User" model in /models/user.js
+          ref: "User" 
+     },
+     name: {
+          type: String,
+          required: true,
+          ref: "User"
      }
 });
-//models are functions we call to connect a schema with a name:
-//mongoose takes the model name we defined "Products", turns it
-//to all lower case and gives it a pular form. => products. And
-//thats what will be displayed as the collection name in the db.
+
 module.exports = mongoose.model("Product", productSchema);

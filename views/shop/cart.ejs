@@ -43,10 +43,10 @@
                                         <%= prod.title%>
                                    </span>
                                    <span class="cart-item">
-                                        <img class="cart-image" src="<%=prod.imageUrl%>"  alt="<%= prod.title%>"> 
+                                        <img class="cart-image" src="<%=prod.productId.imageUrl%>"  alt="<%= prod.title%>"> 
                                    </span>                   
                                    <span class="cart-item">
-                                        $<%= prod.price%>
+                                        $<%= prod.productId.price%>
                                    </span>
                                    <form action="/cart-delete-item" method="POST" class="cart-item">
                                         <input type="hidden" name="id" value="<%= prod._id%>">

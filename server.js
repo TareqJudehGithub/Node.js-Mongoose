@@ -2,10 +2,13 @@
 const path = require("path");
 
 //imports
+
+const User = require("./models/user");
+
 //mongoose:
 const mongoose = require("mongoose");
 
-// const User = require("./models/user");
+
 
 //Express Server setup
 const express = require("express");
@@ -22,23 +25,19 @@ const errorController = require("./controllers/404");
 
 //middlwares:
 app.use(express.urlencoded( {extended: false }));
-
-// app.use((req, res, next) => {
-//      User.findById("5e9b106ac63224448cb2c1ed")
-//      .then(user => {
-//           req.user = new User(
-//                user.name,
-//                user.email, 
-//                user.cart,
-//                user._id
-//                );
-//           next();
-//      })
-//      .catch(err => console.log(err));
-// });
+app.use(express.static(path.join(__dirname, "/public")));
+app.use((req, res, next) => {
+     User.findById("5ea0cf52deced82c2c0920a3")
+     .then(user => {
+     //mongoose stores the user in this req below:
+          req.user = user;
+          next();
+     })
+     .catch(err => console.log(err));
+});
 
 //static files path: to grant access to other folders:
-app.use(express.static(path.join(__dirname, "/public")));
+
 
 //end-points:
 app.use(adminRoute);
@@ -53,9 +52,25 @@ mongoose
      "mongodb+srv://TJDBuser:D6INl1sR8aBSzvtn@nodemongodb-bm3zf.mongodb.net/Nodejs-Mongoose?retryWrites=true&w=majority",
      {
           useNewUrlParser: true, 
-          useUnifiedTopology: true
+          useUnifiedTopology: true,
+          useFindAndModify: false
      })
      .then(result => {
+          //find() with no arguements, returns the 1st document it find:
+          User.findOne()
+          .then(user => {
+               if (!user) {
+                    //creating a new usre from models/user.js:
+              const user = new User({
+                   name: "John",
+                   email: "john@email.com",
+                   cart: {
+                        items: []
+                   }
+              });
+              user.save();
+              }
+          })        
           app.listen(4000, () => {
           console.log("Express server is up and running on PORT 4000.");
           });
@@ -63,6 +78,7 @@ mongoose
      .catch(err => {
           console.log("Error starting Express server.");
      })
+//Mongoose DB connection test:
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {

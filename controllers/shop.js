@@ -54,8 +54,11 @@ exports.getProducts = (req, res, next) => {
 
      //fetching cart from db:
      req.user
-     .getCart()
-     .then(products => {
+     .populate("cart.items.productId")
+     .execPopulate()
+     .then(user => {
+          console.log(user.cart.items);
+          const products = user.cart.items;
           //products available in cart and rendering them to page /cart:        
                res.render(
                     ("shop/cart.ejs"),
@@ -92,7 +95,8 @@ exports.postCartDeleteProduct = (req, res, next) => {
      const id = req.body.id;
      
      //get cart for the current user:
-     req.user.deleteItemFromCart(id)
+     req.user
+     .removeFromCart(id)
      .then(result => {
           res.redirect("/cart");
      })
