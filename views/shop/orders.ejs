@@ -39,21 +39,21 @@
                          <div class="order-border">
                          <p> Order Summary</p>  
                              
-                         
-                                        <%order.items.map(product => {%>
+                         <!-- models/order.js: orderSchema{ products: [ productId]} -->
+                                        <%order.products.map(item => {%>
                                              
                                              <div class="orders-list">
                                                   <span class="order-list-item">
-                                                       <%=product.quantity%>
+                                                       <%=item.quantity%>
                                                   </span >
                                                   <span class="order-list-item">
-                                                       <%=product.title%>
+                                                       <%=item.product.title%>
                                                   </span>
                                                   <span class="order-list-item">
-                                                       <img src="<%=product.imageUrl%>" height="100px" width="auto"  alt="<%=product.imageUrl%>">
+                                                       <img src="<%=item.product.imageUrl%>" height="100px" width="auto"  alt="<%=item.product.imageUrl%>">
                                                   </span>                 
                                                   <span class="order-list-item">
-                                                       <%=product.price%>
+                                                       <%=item.product.price%>
                                                   </span>
                                              </div>
                                         <%})%>

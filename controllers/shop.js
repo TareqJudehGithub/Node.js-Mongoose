@@ -1,5 +1,6 @@
 //imports:
 const Product = require("../models/product");
+const Order = require("../models/order");
 
 //users routes:
 exports.getProducts = (req, res, next) => {
@@ -57,7 +58,6 @@ exports.getProducts = (req, res, next) => {
      .populate("cart.items.productId")
      .execPopulate()
      .then(user => {
-          console.log(user.cart.items);
           const products = user.cart.items;
           //products available in cart and rendering them to page /cart:        
                res.render(
@@ -108,19 +108,43 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 //move all cart items into postOrder
 exports.postOrder = (req, res, next) => {
-   
-     let fetchedCart;
      req.user
-     .addOrder()
-     .then(result => {
+     .populate("cart.items.productId")
+     .execPopulate()
+     .then(user => {
+          
+     //products in the user's cart (from /models/order.js: orderSchema(Products array)):
+          const products = user.cart.items.map(item => {
+               
+               return {quantity: item.quantity, 
+                    product: {...item.productId._doc} //_doc a Mongoose field that returns the whole doc.
+               };
+          });
+          const order = new Order({
+               //initializing the user from model/order.js: {user: {name, userId}}
+               user: {
+                    name: req.user.name,
+                    userId: req.user
+               },
+               //initializing the user from model/order.js: {product: {title, productId}}
+               products: products
+          });
+          return order.save();
+     })   
+     .then(() => {
+          return req.user.clearCart();
+       
+     })
+     .then(() => {
+          console.log("Cart item(s) moved to Orders.")
           res.redirect("/orders");
      })
      .catch(err => console.log(err));
 }
 
 exports.getOrders = (req, res, next) => {
-     req.user
-     .getOrders()
+     //"user.userId" in model/order.js: user: ["userId"]
+     Order.find({"user.userId": req.user._id})
      .then(orders => {
           res.render(
                "shop/orders.ejs",
