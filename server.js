@@ -21,6 +21,7 @@ app.set("views", "views"); //for the views folder
 //Routes:
 const adminRoute = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 const errorController = require("./controllers/404");
 
 //middlwares:
@@ -42,6 +43,8 @@ app.use((req, res, next) => {
 //end-points:
 app.use(adminRoute);
 app.use(shopRoutes);
+app.use(authRoutes);
+
 
 //Error page not found for undefined routes.
 app.use(errorController.get404);

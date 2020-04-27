@@ -18,9 +18,11 @@ exports.getAdminProducts = (req, res, next) => {
           res.render(
              "admin/products.ejs",
              {
-                pageTitle: "Admin Products",
-                path: "/admin/products",
-                prods: products
+               prods: products, 
+               pageTitle: "Admin Products",
+               path: "/admin/products",
+               isAuthenticated: req.isLoggedIn
+                
              });
      })
      .catch(err => console.log(err));
@@ -35,6 +37,7 @@ exports.getAddProduct = (req, res, next) => {
                pageTitle: "Add new product",
                path: "/admin/add-product",
                editing: false,
+               isAuthenticated: req.isLoggedIn
           });              
 };
 

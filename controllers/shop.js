@@ -11,7 +11,8 @@ exports.getProducts = (req, res, next) => {
                     {
                          prods: products,
                          pageTitle: "Products List",
-                         path: "/products"
+                         path: "/products",
+                         isAuthenticated: req.isLoggedIn
                     });
                })
           .catch(err => console.log("Products List Error!", err));
@@ -29,7 +30,8 @@ exports.getProducts = (req, res, next) => {
                     {
                          product: product,
                          pageTitle: "Product Details",
-                         path: "/products"
+                         path: "/products",
+                         isAuthenticated: req.isLoggedIn
                     }
                );
           })
@@ -44,7 +46,8 @@ exports.getProducts = (req, res, next) => {
                {
                     prods: products,
                     pageTitle: "Shop",
-                    path: "/"
+                    path: "/",
+                    isAuthenticated: req.isLoggedIn
                })
           })
      .catch(err => {console.log(err)});
@@ -65,7 +68,8 @@ exports.getProducts = (req, res, next) => {
                     {
                          products: products,
                          pageTitle: "Shopping Cart",
-                         path: "/cart"
+                         path: "/cart",
+                         isAuthenticated: req.isLoggedIn
                     });
      })
      .catch(err => console.log(err));
@@ -151,7 +155,8 @@ exports.getOrders = (req, res, next) => {
                {
                     orders: orders,
                     pageTitle: "Completed Orders",
-                    path: "/orders",     
+                    path: "/orders",
+                    isAuthenticated: req.isLoggedIn     
                });
           // console.log(`Users orders are: ${orders}`)
      })
