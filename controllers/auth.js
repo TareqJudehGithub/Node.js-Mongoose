@@ -1,32 +1,33 @@
+const User = require("../models/user");
 exports.getLogin = (req, res, next) => {
-     //spliting with ; and taking the 2nd value now in the array [1]
-     const isloggedIn = req
-          .get("Cookie")
-          .split(";")[0]
-          .trim()
-          .split("=")[0];
+     console.log(req.session.isLoggedIn);
      res.render(
           "auth/login.ejs",
           {
                pageTitle: "Login Page",
                path: "/login",
-               isAuthenticated: isloggedIn     
+               isAuthenticated: false     
           });
 };
 exports.postLogin = (req, res, next) => {
-     //setting up a cookie: Set-Cookie is a resereved name for Node.js
-   
-     res.cookie("loggedIn=true");
-     res.redirect("/");
      
+     User.findById("5ea0cf52deced82c2c0920a3")
+     .then(user => {
+          req.session.isLoggedIn = true;
+     //mongoose stores the user in this req below:
+          req.session.user = user;
+          res.redirect("/");     
+     })
+     .catch(err => console.log(err));   
 };
+
 exports.getSignUp = (req, res, next) => {
      res.render(
           "auth/signUp.ejs",
           {
                pageTitle: "Sign Up",
                path:"/signUp",
-               isAuthenticated: req.isLoggedIn
+               isAuthenticated: req.session.isLoggedIn
           }
      )
 };

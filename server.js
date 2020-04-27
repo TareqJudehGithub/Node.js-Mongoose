@@ -2,13 +2,23 @@
 const path = require("path");
 
 //imports
-
 const User = require("./models/user");
 
 //mongoose:
 const mongoose = require("mongoose");
+const MongoDB_URI = "mongodb+srv://TJDBuser:D6INl1sR8aBSzvtn@nodemongodb-bm3zf.mongodb.net/Nodejs-Mongoose?retryWrites=true&w=majority";
+//express-session
+const session = require("express-session");
 
-
+//connect-mongodb-session - store
+//1.
+const MongoDBStore = require("connect-mongodb-session")(session);
+//2. initialize a new store: executing MongoDBStore as a constructor:
+const store = new MongoDBStore({
+     //connectoin string:
+     uri: MongoDB_URI,
+     collection: "sessions"
+});
 
 //Express Server setup
 const express = require("express");
@@ -25,26 +35,24 @@ const authRoutes = require("./routes/auth");
 const errorController = require("./controllers/404");
 
 //middlwares:
+//express-bodyParser
 app.use(express.urlencoded( {extended: false }));
-app.use(express.static(path.join(__dirname, "/public")));
-app.use((req, res, next) => {
-     User.findById("5ea0cf52deced82c2c0920a3")
-     .then(user => {
-     //mongoose stores the user in this req below:
-          req.user = user;
-          next();
-     })
-     .catch(err => console.log(err));
-});
-
 //static files path: to grant access to other folders:
-
+app.use(express.static(path.join(__dirname, "/public")));
+//express-session
+app.use(
+     session({ 
+          secret: "password", 
+          resave: false, 
+          saveUninitialized: false,
+          store: store
+     })
+);  
 
 //end-points:
 app.use(adminRoute);
 app.use(shopRoutes);
 app.use(authRoutes);
-
 
 //Error page not found for undefined routes.
 app.use(errorController.get404);
@@ -52,7 +60,7 @@ app.use(errorController.get404);
 //mongoose connection setup:
 mongoose
      .connect(
-     "mongodb+srv://TJDBuser:D6INl1sR8aBSzvtn@nodemongodb-bm3zf.mongodb.net/Nodejs-Mongoose?retryWrites=true&w=majority",
+     MongoDB_URI,
      {
           useNewUrlParser: true, 
           useUnifiedTopology: true,

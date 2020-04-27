@@ -8,9 +8,6 @@ exports.getAdminProducts = (req, res, next) => {
      // get all products for the current user:
    
      Product.find()
-//.select() and .populate() are like Projections in MongoDB.
-     // .select("title price imageUrl -description")
-     // .populate("userId", "name")
      .then(products => {
           console.log(products.map(product => {
                return `Displaying: ${product.title}`;
@@ -21,7 +18,7 @@ exports.getAdminProducts = (req, res, next) => {
                prods: products, 
                pageTitle: "Admin Products",
                path: "/admin/products",
-               isAuthenticated: req.isLoggedIn
+               isAuthenticated: req.session.isLoggedIn
                 
              });
      })
@@ -37,7 +34,7 @@ exports.getAddProduct = (req, res, next) => {
                pageTitle: "Add new product",
                path: "/admin/add-product",
                editing: false,
-               isAuthenticated: req.isLoggedIn
+               isAuthenticated: req.session.isLoggedIn
           });              
 };
 
@@ -47,17 +44,16 @@ exports.postAddProduct = (req, res, next) => {
 
      //creating a new product by Mongoose:
      const product = new Product({
-//props defined in /models.products.js rodcustSchema: data received from
+//props defined in /models.products.js productSchema: data received from
 //controller action req.body:
           title: title,
           price: price,
           imageUrl: imageUrl,
           description: description,
-//since we saved the user in our req(req.user), we now have access to the user:
-//But Mongoose gives us access to the entire User object, so no need
-//to include ._id at the end of req.user
-          userId: req.user,
-          name: req.user.name,
+
+//Mongoose gives us access to the entire User object:
+          userId: req.session.user,
+          name: req.session.user.name,
      });
      product
      .save()
@@ -83,7 +79,8 @@ exports.postAddProduct = (req, res, next) => {
                     pageTitle: "Edit product",
                     path: "/admin/edit-product",
                     editing: true,
-                    product: product
+                    product: product,
+                    isAuthenticated: req.session.isLoggedIn
                });
      })
      .catch(err => console.log(err)); 
