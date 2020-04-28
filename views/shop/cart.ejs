@@ -36,16 +36,16 @@
                          <% products.map(prod => { %>
                          
                               <div class="product__cart">
-                                   <span class="cart-item">
+                                   <span class="">
                                         <%= prod.quantity%>
                                    </span>     
-                                   <span class="cart-item">
+                                   <span class="">
                                         <%= prod.title%>
                                    </span>
-                                   <span class="cart-item">
+                                   <span class="">
                                         <img class="cart-image" src="<%=prod.productId.imageUrl%>"  alt="<%= prod.title%>"> 
                                    </span>                   
-                                   <span class="cart-item">
+                                   <span class="">
                                         $<%= prod.productId.price%>
                                    </span>
                                    <form action="/cart-delete-item" method="POST" class="cart-item">

@@ -213,6 +213,22 @@ form {
   background-color: #00695c;
   color: white;
 }
+.btn-logout {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+  outline-style: none;
+
+}
+.btn-logout:hover,
+.btn-logout:active {
+  color: #ffeb3b;
+  outline-style: none;
+}
+
 
 @media (min-width: 768px) {
   .main-header__nav {

@@ -52,8 +52,8 @@ exports.postAddProduct = (req, res, next) => {
           description: description,
 
 //Mongoose gives us access to the entire User object:
-          userId: req.session.user,
-          name: req.session.user.name,
+          userId: req.user,
+          name: req.user.name,
      });
      product
      .save()

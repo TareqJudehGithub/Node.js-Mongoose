@@ -79,18 +79,21 @@
         flex-direction: row; 
         justify-content: space-evenly; 
         margin: 0 auto;
-        padding: 10px auto;
+        /* padding: 10px auto; */
     }
     .header-field {        
        font-weight: bold;
-       width: 25%;
+       /* width: 25%; */
      }
     .product__cart{
+      width: 100%;
         display:flex;  
         justify-content: space-evenly;
         flex-direction: row;
         align-items: center;
-       margin: 2rem auto;  
+       margin-top: 2rem; 
+      
+
      }
   
     .cart-image {

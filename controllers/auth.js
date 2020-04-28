@@ -9,17 +9,26 @@ exports.getLogin = (req, res, next) => {
                isAuthenticated: false     
           });
 };
-exports.postLogin = (req, res, next) => {
-     
+exports.postLogin = (req, res, next) => {  
      User.findById("5ea0cf52deced82c2c0920a3")
      .then(user => {
           req.session.isLoggedIn = true;
      //mongoose stores the user in this req below:
           req.session.user = user;
-          res.redirect("/");     
+          req.session.save(err => {
+               console.log(err);
+               res.redirect("/");     
+          })
+          
      })
      .catch(err => console.log(err));   
 };
+exports.postLogout = (req, res, next) => {
+     req.session.destroy(err => {
+       console.log(err);
+       res.redirect('/');
+     });
+   };
 
 exports.getSignUp = (req, res, next) => {
      res.render(

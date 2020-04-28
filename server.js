@@ -6,7 +6,7 @@ const User = require("./models/user");
 
 //mongoose:
 const mongoose = require("mongoose");
-const MongoDB_URI = "mongodb+srv://TJDBuser:D6INl1sR8aBSzvtn@nodemongodb-bm3zf.mongodb.net/Nodejs-Mongoose?retryWrites=true&w=majority";
+const MONGODB_URI = "mongodb+srv://TJDBuser:D6INl1sR8aBSzvtn@nodemongodb-bm3zf.mongodb.net/Nodejs-Mongoose?retryWrites=true&w=majority";
 //express-session
 const session = require("express-session");
 
@@ -16,7 +16,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 //2. initialize a new store: executing MongoDBStore as a constructor:
 const store = new MongoDBStore({
      //connectoin string:
-     uri: MongoDB_URI,
+     uri: MONGODB_URI,
      collection: "sessions"
 });
 
@@ -47,7 +47,26 @@ app.use(
           saveUninitialized: false,
           store: store
      })
-);  
+); 
+app.use((req, res, next) => {
+
+//If I don't have a user stored in my session,
+//then the code after next() will not be executed.
+     if(!req.session.user){
+     return next();
+     }
+     //stored user in the session, fetch his Id,
+     //and then find that user in db with the help
+     //of models/User provided by Mangoose:
+     User.findById(req.session.user._id)
+     .then(user => {
+     //I return a models/User Mangoose (user):
+        req.user = user;
+          next();
+     })
+     .catch(err => console.log(err));   
+});
+
 
 //end-points:
 app.use(adminRoute);
@@ -60,7 +79,7 @@ app.use(errorController.get404);
 //mongoose connection setup:
 mongoose
      .connect(
-     MongoDB_URI,
+          MONGODB_URI,
      {
           useNewUrlParser: true, 
           useUnifiedTopology: true,
